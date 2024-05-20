@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SELLER
+  USER
+}
+
+model User {
+  id Int @id @default(autoincrement()) 
+  uuid String @unique @default(uuid())
+  name String?
+  surname String?
+  age String?
+  email String @unique
+  password String @unique
+  role Role
+  profileImg String?
+  complexes Complexes[]
+}
+
+model Complexes {
+  id Int @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+  name String
+  image String
+  info String
+  price String
+  area String
+  class String
+  finishing String
+  userId Int @unique @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  flats Flats[]
+}
+
+model Flats {
+  id Int @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+  img FlatsImages[]
+  price String
+  rooms String
+  floor String
+  liter String
+  complex Complexes @relation(fields: [flatId], references: [id])
+  flatId Int
+}
+
+model FlatsImages {
+  id Int @id @default(autoincrement())
+  uuid String @unique @default(uuid())
+  img String
+  flats Flats @relation(fields: [flatImgId], references: [id])
+  flatImgId Int
+}
